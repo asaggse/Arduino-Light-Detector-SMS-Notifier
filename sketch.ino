@@ -5,7 +5,6 @@
 const char PINNUMBER[] = "";
 const int LDR_PIN = 2;
 const int LIGHT_THRESHOLD = 300;
-const char REMOTE_NUMBER[] = "+1234567890";
 const char SMS_MESSAGE[] = "Light detector triggered at ";
 unsigned long last_sms_time = 0;
 
@@ -40,6 +39,10 @@ void setup() {
   setSyncProvider(RTC.get);
 }
 
+char remoteNum1[] = "+1234567890";
+char remoteNum2[] = "+0987654321";
+char remoteNum3[] = "+1029384756";
+
 void loop() {
   int light_level = analogRead(LDR_PIN);
   if (light_level < LIGHT_THRESHOLD && last_sms_time + 300000 < millis() ) {
@@ -49,10 +52,22 @@ void loop() {
     Serial.print("SENDING ");
     Serial.println(txtMsg);
 
-    // send the message
-    sms.beginSMS(REMOTE_NUMBER);
+    // send the message to multiple phone numbers
+    sms.beginSMS(remoteNum1);
     sms.print(txtMsg);
     sms.endSMS();
-    Serial.println("\nSMS sent successfully!\n");
+    delay(1000); // delay to avoid sending messages too quickly
+
+    sms.beginSMS(remoteNum2);
+    sms.print(txtMsg);
+    sms.endSMS();
+    delay(1000);
+
+    sms.beginSMS(remoteNum3);
+    sms.print(txtMsg);
+    sms.endSMS();
+    delay(1000);
+
+    Serial.println("\nMESSAGE SENT TO MULTIPLE NUMBERS!\n");
   }
 }
